@@ -19,29 +19,21 @@ void loop(){
   }
   if(digitalRead(3)
   {
-  if(mySerial.read()=='A')
+  if(mySerial.read()=='A'|| mySerial.read()=='E')
   {
     //Arm and slide codes go here
     Serial.println("Hello");
   }
-  if(mySerial.read()=='E')
-  {
-    //Arm and slide codes go here
-    Serial.println("Hello 2");
-  }
+
   }
   if(!digitalRead(3))
   {
-    if(mySerial.read()=='I')
+    if(mySerial.read()=='I'|| mySerial.read()=='O')
   {
     //Arm and slide codes go here
     Serial.println("Hello");
   }
-  if(mySerial.read()=='O')
-  {
-    //Arm and slide codes go here
-    Serial.println("Hello 2");
-  }
+  
   }
   
  
