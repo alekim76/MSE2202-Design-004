@@ -63,7 +63,6 @@ void loop() {
     {
       if (mySerial.read() == 'I' || mySerial.read() == 'O')
       {
-        //Arm and slide codes go here
         digitalWrite(irsensor , HIGH);
       }
       else {
@@ -75,7 +74,6 @@ void loop() {
       Serial.println("keep looking");
       digitalWrite(8, LOW);
     }
-
   }
 }
 

@@ -9,6 +9,7 @@ Servo servo_RightMotor;
 Servo servo_LeftMotor;
 Servo servo_SwingServo;
 Servo servo_LiftServo;
+Servo servo_TipServo;
 
 I2CEncoder encoder_RightMotor;
 I2CEncoder encoder_LeftMotor;
@@ -40,14 +41,17 @@ const int irsensor = 13;
 const int ci_Charlieplex_LED3 = 6;
 const int ci_Charlieplex_LED4 = 7;
 const int ci_Mode_Button = 7;
-const int ci_Right_Motor; ///////////////////////port 8 is bad
+const int ci_Right_Motor = A4; ///////////////////////port 8 is bad
 const int ci_Left_Motor = 9;
 const int ci_Swing_servo = 10;
 const int ci_Lift_servo = 11;
+
+const int ci_Tip_servo; /////////////////////////////find port
+
 const int ci_Motor_Enable_Switch = 12;
 
 
-const int ci_Hall_Sensor = 5; ////////////////////////////////////////////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!
+const int ci_Hall_Sensor = 5;  
 
 // Charlieplexing LED assignments
 const int ci_Heartbeat_LED = 1;
@@ -148,6 +152,8 @@ void setup() {
   servo_SwingServo.attach(ci_Swing_servo);
   pinMode(ci_Lift_servo, OUTPUT);
   servo_LiftServo.attach(ci_Lift_servo);
+  pinMode(ci_Tip_servo, OUTPUT);
+  servo_TipServo.attach(ci_Tip_servo);
 
   // set up motor enable switch
   pinMode(ci_Motor_Enable_Switch, INPUT);
@@ -233,154 +239,106 @@ void loop()
 
 
 
-          /*while (digitalRead(ci_Hall_Sensor) == LOW) { ///////////////////////////////////// SET UP FOR HIGH LOW
 
-             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-             servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+          while (digitalRead(ci_Hall_Sensor) == LOW) {
 
-             Ping_1();
-             Ping_2();
-             Ping_3();
-
-
-             if ((ul_Echo_Time_1 / 58) >= 6 && (ul_Echo_Time_1 / 58) <= 9) { /////////////////////////TEST FOR VALUE
-               // if the robot approches the wall, turn right
-               servo_LeftMotor.writeMicroseconds(1800);
-               servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-               delay(1000); //////////////////////////////////////////////////////////TEST FOR VALUE
-             }
-             else if ((ul_Echo_Time_2 / 58) >= 5) {
-               //if too far away from wall, makes a small adjustment /////////////////////////////// TEST FOR VALUE
-               servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-               servo_RightMotor.writeMicroseconds((ui_Right_Motor_Speed) + 300);
-               delay(70);
-
-             }
-             else if ((ul_Echo_Time_2 / 58) <= 3) {
-               //if too far away from wall, makes a small adjustment /////////////////////////////// TEST FOR VALUE
-               servo_LeftMotor.writeMicroseconds((ui_Left_Motor_Speed) + 300);
-               servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-               delay(70);
-
-             }
-            }
-
-            int turn = 1;
-
-            while (digitalRead(irsensor) == LOW) { ///////////////////////////////////////////////////////////none of the sensors see a pyramid
-             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-             servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-
-             if ((ul_Echo_Time_1 / 58) >= 6 && (ul_Echo_Time_1 / 58) <= 9 && turn == 1) { /////////////////////////TEST FOR VALUE
-               // if the robot approches the wall, turn around
-               turn = 0;
-               servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-               servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-               delay(2000); //////////////////////////////////////////////////////////TEST FOR VALUE - MAYBE NOT USE DELAY!!!!!!!!!!!!!!!!!!!!
-             }
-             else if ((ul_Echo_Time_1 / 58) >= 6 && (ul_Echo_Time_1 / 58) <= 9 && turn == 0) { /////////////////////////TEST FOR VALUE
-               // if the robot approches the wall, turn around
-               turn = 1;
-               servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-               servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-               delay(2000); //////////////////////////////////////////////////////////TEST FOR VALUE
-             }
-            }
-
-            servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-            servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-            delay(500);
-            servo_LiftServo.write(ci_Lift_Servo_up);
-            delay(500);
             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
             servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-            delay(200); /////////////////////////////////////////////////////////TEST FOR VALUE
 
-            unsigned long previousMillis = 0;        // will store last time LED was updated
-            const long interval = 2000; ////////////////////////////TEST FOR VALUE
-            int turn2;
+            Ping_1();
+            Ping_2();
+            Ping_3();
 
-            if (turn == 1) {
-             turn2 = 1;
-             while (digitalRead(irsensor) == LOW)) {
-
-               if (turn2 == 1) {
-                 servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-                 servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-               }
-               else if (turn2 == 0) {
-                 servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-                 servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-               }
-               unsigned long currentMillis = millis();
-
-               if (currentMillis - previousMillis >= interval) {
-
-                 previousMillis = currentMillis;
-                 servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-                 servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-                 if (turn2 == 1) turn2 = 0;
-                 else if (turn2 == 0) turn2 = 1;
-               }
-             }
+            if ((ul_Echo_Time_1 / 58) >= 6 && (ul_Echo_Time_1 / 58) <= 9) { /////////////////////////TEST FOR VALUE
+              // if the robot approches the wall, turn right
+              servo_LeftMotor.writeMicroseconds(1800);
+              servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
+              delay(1000); //////////////////////////////////////////////////////////TEST FOR VALUE
             }
-            else if (turn == 0) {
-             turn2 = 0;
-             while (digitalRead(irsensor) == LOW)) {
-
-               if (turn2 == 1) {
-                 servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-                 servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-               }
-               else if (turn2 == 0) {
-                 servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-                 servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-               }
-               unsigned long currentMillis = millis();
-
-               if (currentMillis - previousMillis >= interval) {
-
-                 previousMillis = currentMillis;
-                 servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-                 servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-                 if (turn2 == 1) turn2 = 0;
-                 else if (turn2 == 0) turn2 = 1;
-               }
-             }
+            else if ((ul_Echo_Time_2 / 58) >= 5) {
+              //if too far away from wall, makes a small adjustment /////////////////////////////// TEST FOR VALUE
+              servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+              servo_RightMotor.writeMicroseconds((ui_Right_Motor_Speed) + 300);
+              delay(70);
             }
-            servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-            servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-            servo_LiftServo.write(130);
-            delay(500);
-            Ping_1()
-            int hold = (ul_Echo_Time_1 / 58) * 100;
-            servo_LiftServo.write(ci_Lift_Servo_up);
-            delay(500);
+            else if ((ul_Echo_Time_3 / 58) >= 3) {
+              //if too far away from wall, makes a small adjustment /////////////////////////////// TEST FOR VALUE
+              servo_LeftMotor.writeMicroseconds((ui_Left_Motor_Speed) + 100);
+              servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+              delay(70);
+            }
+          }
+
+          int turn = 1;
+
+          while (digitalRead(irsensor) == LOW) { ///////////////////////////////////////////////////////////none of the sensors see a pyramid
             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
             servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-            delay(hold);
 
-            servo_LiftServo.write(ci_Lift_Servo_down);
-            delay(300);
-            servo_SwingServo.writeMicroseconds(1900);
-            delay(500);
-            servo_LiftServo.write(ci_Lift_Servo_up);
-            delay(500);
-            servo_SwingServo.writeMicroseconds(1200);
-            delay(500);
-            servo_LeftMotor.writeMicroseconds(1300);
-            servo_RightMotor.writeMicroseconds(1300);
-            delay(500);
-            servo_LeftMotor.detach();
-            servo_RightMotor.detach();
-            break;
+            if ((ul_Echo_Time_1 / 58) >= 6 && (ul_Echo_Time_1 / 58) <= 9 && turn == 1) { /////////////////////////TEST FOR VALUE
+              // if the robot approches the wall, turn around
+              turn = 0;
+              servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+              servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
+              delay(2000); //////////////////////////////////////////////////////////TEST FOR VALUE - MAYBE NOT USE DELAY!!!!!!!!!!!!!!!!!!!!
+            }
+            else if ((ul_Echo_Time_1 / 58) >= 6 && (ul_Echo_Time_1 / 58) <= 9 && turn == 0) { /////////////////////////TEST FOR VALUE
+              // if the robot approches the wall, turn around
+              turn = 1;
+              servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
+              servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+              delay(2000); //////////////////////////////////////////////////////////TEST FOR VALUE
+            }
+          }
 
-            */
+          servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
+          servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
+          delay(500);
+          servo_LiftServo.write(ci_Lift_Servo_up);
+          delay(500);
+          servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+          servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+          delay(200); /////////////////////////////////////////////////////////TEST FOR VALUE
 
-          servo_LeftMotor.writeMicroseconds(1900);
-          //servo_SwingServo.writeMicroseconds(1900);
+          int turn2;
 
- 
+          if (turn == 1) {
+            turn2 = 1;
+            look(turn2);
+          }
+          else if (turn == 0) {
+            turn2 = 0;
+            look(turn2);
+          }
+
+          servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
+          servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
+          servo_LiftServo.write(130);
+          delay(500);
+          Ping_1();/////////////////////////////////////possible problem point 
+          int hold = (ul_Echo_Time_1 / 58) * 100;
+          servo_LiftServo.write(ci_Lift_Servo_up);
+          delay(500);
+          servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+          servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+          delay(hold);
+
+          servo_LiftServo.write(ci_Lift_Servo_down);
+          delay(300);
+          servo_SwingServo.writeMicroseconds(1900);
+          delay(500);
+          servo_LiftServo.write(ci_Lift_Servo_up);
+          delay(500);
+          servo_SwingServo.writeMicroseconds(1200);
+          delay(500);
+          servo_LeftMotor.writeMicroseconds(1300);
+          servo_RightMotor.writeMicroseconds(1300);
+          delay(500);
+          servo_LeftMotor.detach();
+          servo_RightMotor.detach();
+          break;
+
+
 
 #ifdef DEBUG_MOTORS
           Serial.print("Motors enabled: ");
@@ -533,4 +491,33 @@ void Ping_3()
   Serial.println(ul_Echo_Time_3 / 58); //divide time by 58 to get distance in cm
 #endif
 }
+
+void look(int turn2)
+{
+  unsigned long previousMillis = 0;        // will store last time LED was updated
+  const long interval = 2000; ////////////////////////////TEST FOR VALUE
+
+  while (digitalRead(irsensor) == LOW) {
+
+    if (turn2 == 1) {
+      servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+      servo_RightMotor.writeMicroseconds(1200);
+    }
+    else if (turn2 == 0) {
+      servo_LeftMotor.writeMicroseconds(1400);
+      servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+    }
+    unsigned long currentMillis = millis();
+
+    if (currentMillis - previousMillis >= interval) {
+
+      previousMillis = currentMillis;
+      servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
+      servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
+      if (turn2 == 1) turn2 = 0;
+      else if (turn2 == 0) turn2 = 1;
+    }
+  }
+}
+
 
