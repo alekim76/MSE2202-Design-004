@@ -21,7 +21,7 @@ I2CEncoder encoder_LeftMotor;
 //#define DEBUG_ENCODERS
 //#define DEBUG_ULTRASONIC1
 //#define DEBUG_ULTRASONIC2
-//#define DEBUG_ULTRASONIC3
+#define DEBUG_ULTRASONIC3
 //#define DEBUG_MOTOR_CALIBRATION
 
 boolean bt_Motors_Enabled = true;
@@ -34,7 +34,7 @@ const int ci_Ultrasonic_Ping_2 = A0;  //input plug////////////////////////////
 const int ci_Ultrasonic_Data_2 = A1;   //output plug///////////////////////////
 
 const int ci_Ultrasonic_Ping_3 = 3;  //input plug////////////////////////////
-const int ci_Ultrasonic_Data_3 = 2;   //output plug///////////////////////////
+const int ci_Ultrasonic_Data_3 = 4;   //output plug///////////////////////////
 
 const int irsensor = 13;
 
@@ -78,7 +78,7 @@ byte b_HighByte;
 unsigned long ul_Echo_Time_1;
 unsigned long ul_Echo_Time_2;
 unsigned long ul_Echo_Time_3;
-unsigned int ui_Motors_Speed = 1700;        // Default run speed
+unsigned int ui_Motors_Speed = 19300;        // Default run speed
 unsigned int ui_Left_Motor_Speed;
 unsigned int ui_Right_Motor_Speed;
 long l_Left_Motor_Position;
@@ -94,6 +94,9 @@ unsigned int ui_Cal_Count;
 unsigned int ui_Cal_Cycle;
 
 unsigned long previousMillis = 0;
+unsigned long currentMillis = 0;
+
+unsigned int pfound;
 
 unsigned int  ui_Robot_State_Index = 0;
 //0123456789ABCDEF
@@ -235,18 +238,24 @@ void loop()
 #endif
 
           // set motor speeds
-          ui_Left_Motor_Speed = constrain(ui_Motors_Speed + ui_Left_Motor_Offset, 1600, 1800);
-          ui_Right_Motor_Speed = constrain(ui_Motors_Speed + ui_Right_Motor_Offset, 1600, 1800);
+          /*ui_Left_Motor_Speed = constrain(ui_Motors_Speed + ui_Left_Motor_Offset, 1800, 2000);
+            ui_Right_Motor_Speed = constrain(ui_Motors_Speed + ui_Right_Motor_Offset, 1800, 2000);
 
 
-          /*while (digitalRead(ci_Hall_Sensor) == LOW) {
+            while (digitalRead(ci_Hall_Sensor) == LOW) {
 
             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
             servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
 
             Ping_1();
+            Serial.print("  center ultra; ");
+            Serial.print(ul_Echo_Time_1 / 58);
             Ping_2();
+            Serial.print("  Front left ultra; ");
+            Serial.print(ul_Echo_Time_2 / 58);
             Ping_3();
+            Serial.print("  back left ultra; ");
+            Serial.println(ul_Echo_Time_3 / 58);
 
             if ((ul_Echo_Time_1 / 58) >= 10 && (ul_Echo_Time_1 / 58) <= 15) { /////////////////////////TEST FOR VALUE
               // if the robot approches the wall, turn right
@@ -254,13 +263,13 @@ void loop()
               servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
               delay(1670); //////////////////////////////////////////////////////////TEST FOR VALUE
             }
-            else if ((ul_Echo_Time_2 / 58) >= 3) {
+            else if ((ul_Echo_Time_2 / 58) >= 2) {
               //if too far away from wall, makes a small adjustment /////////////////////////////// TEST FOR VALUE
               servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
               servo_RightMotor.writeMicroseconds((ui_Right_Motor_Speed) + 300);
               delay(70);
             }
-            else if ((ul_Echo_Time_3 / 58) >= 3) {
+            else if ((ul_Echo_Time_3 / 58) >= 2) {
               //if too far away from wall, makes a small adjustment /////////////////////////////// TEST FOR VALUE
               servo_LeftMotor.writeMicroseconds((ui_Left_Motor_Speed) + 250);
               servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
@@ -268,12 +277,14 @@ void loop()
             }
             }*/
 
-          int turn = 0;
-          int pfound = 0;
+          Ping_3();
 
 
 
-          while (pfound == 0) { ///////////////////////////////////////////////////////////none of the sensors see a pyramid
+          /*int turn = 0;
+            pfound = 0;
+
+            while (pfound == 0) { ///////////////////////////////////////////////////////////none of the sensors see a pyramid
             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
             servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
 
@@ -284,45 +295,24 @@ void loop()
               Serial.println("succ");
             }
             else if ((ul_Echo_Time_1 / 58) >= 8 && (ul_Echo_Time_1 / 58) <= 10 && turn == 0) { /////////////////////////TEST FOR VALUE
-              // if the robot approches the wall, turn around
-              unsigned long currentMillis = millis();
-              do {
-                previousMillis = currentMillis;
-                turn = 1;
-                servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed + 200);
-                servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-                if (digitalRead(irsensor) == HIGH) {
-                  pfound = 1;
-                  Serial.println("succ");
-                  break;
-                }
-              } while (currentMillis - previousMillis < 2900);
+              // if the robot approches the wall, turn right around
+              scanturn(turn);
+              turn = 1;
             }
             else if ((ul_Echo_Time_1 / 58) >= 8 && (ul_Echo_Time_1 / 58) <= 10 && turn == 1) { /////////////////////////TEST FOR VALUE
-              // if the robot approches the wall, turn around
-              unsigned long currentMillis = millis();
-              do {
-                previousMillis = currentMillis;
-                turn = 0;
-                servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-                servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed + 200);
-                if (digitalRead(irsensor) == HIGH) {
-                  pfound = 1;
-                  Serial.println("succ");
-                  break;
-                }
-              }while (currentMillis - previousMillis < 2900);
+              // if the robot approches the wall, turn left around
+              scanturn(turn);
+              turn = 0;
             }
-          }
+            }
+
+            servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
+            servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
+            servo_LeftMotor.detach();
+            servo_RightMotor.detach();
 
 
-          servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-          servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-          servo_LeftMotor.detach();
-          servo_RightMotor.detach();
-
-
-          /*delay(500);
+            /*delay(500);
             servo_LiftServo.write(ci_Lift_Servo_up);
             delay(500);
             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
@@ -560,6 +550,54 @@ void look(int turn2)
       else if (turn2 == 0) turn2 = 1;
     }
   }
+}
+void scanturn(int turn) {
+  currentMillis = millis();
+  previousMillis = currentMillis;
+  do {
+    if (digitalRead(irsensor) == HIGH || pfound == 1) {
+      pfound = 1;
+      Serial.println("succ");
+      break;
+    }
+    currentMillis = millis();
+    if (turn == 0) {
+      servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+      servo_RightMotor.writeMicroseconds(1500 - (ui_Right_Motor_Speed - 1500));
+    }
+    else if (turn == 1) {
+      servo_LeftMotor.writeMicroseconds(1500 - (ui_Left_Motor_Speed - 1500));
+      servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+    }
+  } while (currentMillis - previousMillis < 900);//////////////////////////////////////TFV
+  previousMillis = currentMillis;
+  do {
+    if (digitalRead(irsensor) == HIGH || pfound == 1) {
+      pfound = 1;
+      Serial.println("succ");
+      break;
+    }
+    currentMillis = millis();
+    servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+    servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+  } while (currentMillis - previousMillis < 200);//////////////////////////////////////TFV
+  previousMillis = currentMillis;
+  do {
+    if (digitalRead(irsensor) == HIGH || pfound == 1) {
+      pfound = 1;
+      Serial.println("succ");
+      break;
+    }
+    currentMillis = millis();
+    if (turn == 0) {
+      servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+      servo_RightMotor.writeMicroseconds(1500 - (ui_Right_Motor_Speed - 1500));
+    }
+    else if (turn == 1) {
+      servo_LeftMotor.writeMicroseconds(1500 - (ui_Left_Motor_Speed - 1500));
+      servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+    }
+  } while (currentMillis - previousMillis < 900);//////////////////////////////////////TFV
 }
 
 
