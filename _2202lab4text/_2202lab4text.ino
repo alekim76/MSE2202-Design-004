@@ -300,17 +300,17 @@ void loop()
           int lastdir = 0;
           int linefollow = 1;
 
-          while (bt_Motors_Enabled) {
+          /*while (bt_Motors_Enabled) {
 
             servo_ArmMotor.write(ci_Arm_Servo_Extended);
-            servo_GripMotor.write(ci_Grip_Motor_Closed);
+            servo_GripMotor.write(ci_Grip_Motor_Closed);*/
 
             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
             servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
             delay(700);
 
 
-            turnright(1800);
+            /*turnright(1800);
             Ping();
 
             while ((ul_Echo_Time / 58) > 5 || (ul_Echo_Time / 58) < 3 ) {
@@ -384,7 +384,7 @@ void loop()
                 lastdir = LOW;
                 }*/
 
-              // CENTER sensor sees dark:
+              /*// CENTER sensor sees dark:
               else if (!(ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) && (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) && (ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)))
               {
                 // go straight
@@ -439,7 +439,7 @@ void loop()
             servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
             delay(50000);
             break;
-          }
+          }*/
 
 
 

@@ -8,7 +8,7 @@
 
 */
 #include<SoftwareSerial.h>
-SoftwareSerial mySerial(7,11);
+SoftwareSerial mySerial(7,7);
 
 void setup(){
  Serial.begin(9600);
@@ -23,7 +23,7 @@ void setup(){
 
 void loop() {
   // put your main code here, to run repeatedly:
-if(digitalRead(3))
+if(digitalRead(1))
   {
   if(mySerial.read()=='A'||mySerial.read()=='E')
   {
@@ -31,12 +31,13 @@ if(digitalRead(3))
     Serial.println("Hello");
   }
   }
-  if(!digitalRead(3))
+  if(!digitalRead(1))
   {
     if(mySerial.read()=='I'||mySerial.read()=='O')
   {
     //Arm and slide codes go here
     Serial.println("Hello");
+  }
   }
   
 

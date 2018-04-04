@@ -9,8 +9,7 @@
 */
 #include<SoftwareSerial.h>
 SoftwareSerial mySerial(7, 7);
-//SoftwareSerial mySerial2(6, 6);
-//SoftwareSerial mySerial3(5, 5);
+
 
 const int irsensor = 13;
 
@@ -20,11 +19,13 @@ int state;
 void setup() {
   Serial.begin(9600);
 
-  pinMode(irsensor, OUTPUT);
+  //pinMode(irsensor, OUTPUT);
 
   pinMode(hallSensorPin, INPUT);
 
   pinMode(8, OUTPUT);
+
+  pinMode(9, OUTPUT);
 
 
   while (!Serial) {
@@ -37,11 +38,12 @@ void setup() {
 void loop() {
 
   state = analogRead(hallSensorPin);
-  Serial.println(state);
+  //Serial.println(state);
 
   if (state > 400) {
     //IR sensor code
-    Serial.println("Found the cube");
+   // Serial.println("Found the cube");
+    digitalWrite(9, HIGH);
     digitalWrite(8, HIGH);
 
     if (mySerial.available())
@@ -49,32 +51,36 @@ void loop() {
       Serial.write(mySerial.read());
     }
 
-    if (digitalRead(1))
+    if (digitalRead(2))
     {
       if (mySerial.read() == 'A' || mySerial.read() == 'E')
       {
         digitalWrite(irsensor , HIGH);
+        Serial.println("succ");
       }
-      else {
+      /*else {
         digitalWrite(irsensor , LOW);
-      }
+        Serial.println("fail");
+      }*/
     }
-    if (!digitalRead(1))
+    if (!digitalRead(2))
     {
       if (mySerial.read() == 'I' || mySerial.read() == 'O')
       {
         digitalWrite(irsensor , HIGH);
       }
-      else {
+      /*else {
         digitalWrite(irsensor , LOW);
-      }
-    }
-    else {
-      //ultrasonic code to find the cube
-      Serial.println("keep looking");
-      digitalWrite(8, LOW);
+      }*/
     }
   }
+  else {
+    //ultrasonic code to find the cube
+   // Serial.println("keep looking");
+    digitalWrite(8, LOW);
+    digitalWrite(9, LOW);
+  }
 }
+
 
 
