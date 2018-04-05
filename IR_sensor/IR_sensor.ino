@@ -1,4 +1,4 @@
-/*
+ /*
   Software serial MSE 2202 IR tester
 
   The circuit:
@@ -19,7 +19,7 @@ int state;
 void setup() {
   Serial.begin(9600);
 
-  //pinMode(irsensor, OUTPUT);
+  pinMode(irsensor, OUTPUT);
 
   pinMode(hallSensorPin, INPUT);
 
@@ -56,12 +56,11 @@ void loop() {
       if (mySerial.read() == 'A' || mySerial.read() == 'E')
       {
         digitalWrite(irsensor , HIGH);
-        Serial.println("succ");
+        delay(4000);
       }
-      /*else {
+      else {
         digitalWrite(irsensor , LOW);
-        Serial.println("fail");
-      }*/
+      }
     }
     if (!digitalRead(2))
     {
