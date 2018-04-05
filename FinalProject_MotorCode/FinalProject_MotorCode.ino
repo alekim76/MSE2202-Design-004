@@ -21,7 +21,7 @@ I2CEncoder encoder_LeftMotor;
 //#define DEBUG_ENCODERS
 //#define DEBUG_ULTRASONIC1
 //#define DEBUG_ULTRASONIC2
-#define DEBUG_ULTRASONIC3
+//#define DEBUG_ULTRASONIC3
 //#define DEBUG_MOTOR_CALIBRATION
 
 boolean bt_Motors_Enabled = true;
@@ -78,7 +78,7 @@ byte b_HighByte;
 unsigned long ul_Echo_Time_1;
 unsigned long ul_Echo_Time_2;
 unsigned long ul_Echo_Time_3;
-unsigned int ui_Motors_Speed = 19300;        // Default run speed
+unsigned int ui_Motors_Speed = 1700;        // Default run speed
 unsigned int ui_Left_Motor_Speed;
 unsigned int ui_Right_Motor_Speed;
 long l_Left_Motor_Position;
@@ -238,28 +238,24 @@ void loop()
 #endif
 
           // set motor speeds
-          /*ui_Left_Motor_Speed = constrain(ui_Motors_Speed + ui_Left_Motor_Offset, 1800, 2000);
-            ui_Right_Motor_Speed = constrain(ui_Motors_Speed + ui_Right_Motor_Offset, 1800, 2000);
+          ui_Left_Motor_Speed = constrain(ui_Motors_Speed + ui_Left_Motor_Offset, 1600, 1800);
+          ui_Right_Motor_Speed = constrain(ui_Motors_Speed + ui_Right_Motor_Offset, 1600, 1800);
 
+          servo_LiftServo.write(100);
+          delay(1000);
 
-            while (digitalRead(ci_Hall_Sensor) == LOW) {
+          while (digitalRead(ci_Hall_Sensor) == LOW) {
 
             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
             servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
 
             Ping_1();
-            Serial.print("  center ultra; ");
-            Serial.print(ul_Echo_Time_1 / 58);
             Ping_2();
-            Serial.print("  Front left ultra; ");
-            Serial.print(ul_Echo_Time_2 / 58);
             Ping_3();
-            Serial.print("  back left ultra; ");
-            Serial.println(ul_Echo_Time_3 / 58);
 
-            if ((ul_Echo_Time_1 / 58) >= 10 && (ul_Echo_Time_1 / 58) <= 15) { /////////////////////////TEST FOR VALUE
+            if ((ul_Echo_Time_1 / 58) >= 7 && (ul_Echo_Time_1 / 58) <= 10) { /////////////////////////TEST FOR VALUE
               // if the robot approches the wall, turn right
-              servo_LeftMotor.writeMicroseconds(2000);
+              servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
               servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
               delay(1670); //////////////////////////////////////////////////////////TEST FOR VALUE
             }
@@ -271,14 +267,11 @@ void loop()
             }
             else if ((ul_Echo_Time_3 / 58) >= 2) {
               //if too far away from wall, makes a small adjustment /////////////////////////////// TEST FOR VALUE
-              servo_LeftMotor.writeMicroseconds((ui_Left_Motor_Speed) + 250);
+              servo_LeftMotor.writeMicroseconds((ui_Left_Motor_Speed) + 300);
               servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
               delay(70);
             }
-            }*/
-
-          Ping_3();
-
+          }
 
 
           /*int turn = 0;
