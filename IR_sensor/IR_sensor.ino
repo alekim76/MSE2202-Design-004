@@ -50,17 +50,23 @@ void loop() {
     {
       Serial.write(mySerial.read());
     }
+    else{
+      Serial.println("HELLO");
+      digitalWrite(irsensor,LOW);
+    }
 
     if (digitalRead(2))
     {
       if (mySerial.read() == 'A' || mySerial.read() == 'E')
       {
         digitalWrite(irsensor , HIGH);
-        delay(4000);
+       Serial.println("HIGH HIGH");
+       
       }
-      else {
+      /*else {
         digitalWrite(irsensor , LOW);
-      }
+        Serial.println("hello2");
+      }*/
     }
     if (!digitalRead(2))
     {
