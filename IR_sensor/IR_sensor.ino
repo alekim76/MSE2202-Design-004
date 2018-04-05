@@ -40,7 +40,7 @@ void loop() {
   state = analogRead(hallSensorPin);
   //Serial.println(state);
 
-  if (state > 400) {
+  if (state < 600) {
     //IR sensor code
    // Serial.println("Found the cube");
     digitalWrite(9, HIGH);
@@ -51,7 +51,6 @@ void loop() {
       Serial.write(mySerial.read());
     }
     else{
-      Serial.println("HELLO");
       digitalWrite(irsensor,LOW);
     }
 
@@ -59,9 +58,8 @@ void loop() {
     {
       if (mySerial.read() == 'A' || mySerial.read() == 'E')
       {
-        digitalWrite(irsensor , HIGH);
-       Serial.println("HIGH HIGH");
-       
+        digitalWrite(irsensor , HIGH); 
+        Serial.println("S U C C");
       }
       /*else {
         digitalWrite(irsensor , LOW);
