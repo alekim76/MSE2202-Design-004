@@ -241,7 +241,7 @@ void loop()
           ui_Left_Motor_Speed = constrain(ui_Motors_Speed + ui_Left_Motor_Offset, 1600, 1700);
           ui_Right_Motor_Speed = constrain(ui_Motors_Speed + ui_Right_Motor_Offset, 1600, 1700);
 
-          servo_LiftServo.write(100);
+          servo_LiftServo.write(120);
           delay(1000);
 
 
@@ -276,7 +276,7 @@ void loop()
             }
             }*/
 
-          int turn = 0;
+          /*int turn = 0;
 
           while (pfound == 0) { ///////////////////////////////////////////////////////////none of the sensors see a pyramid
             servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
@@ -303,12 +303,17 @@ void loop()
           servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
           servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
           delay(1000);
-          digitalWrite(irsensor, LOW);
+          //digitalWrite(irsensor, LOW);
           if(digitalRead(irsensor) == LOW) Serial.println("fail");
           /*servo_LiftServo.write(ci_Lift_Servo_up);
-          delay(2000);
+          delay(2000);*/
 
-          look(turn);
+          if (digitalRead(irsensor) == HIGH) {
+              pfound = 1;
+              Serial.println("succ");
+            }
+
+          /*look(turn);
 
           servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
           servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
