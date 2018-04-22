@@ -1,4 +1,4 @@
-
+//Helllo3
 int hallSensorPin=A1;
 int state;
 
