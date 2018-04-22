@@ -1,4 +1,4 @@
-//Hello test
+
 int hallSensorPin=A1;
 int state;
 
